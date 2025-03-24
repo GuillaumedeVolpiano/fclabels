@@ -416,7 +416,11 @@ generateLabel
   :: Bool
   -> Bool
   -> Name
+#ifdef MIN_VERSION_template_haskell(2,21,0)
+  -> [TyVarBndr BndrVis]
+#else
   -> [TyVarBndr ()]
+#endif
   -> [Con]
   -> Field ([Context], Subst)
   -> Q Label
@@ -556,7 +560,7 @@ freshNames = map pure ['a'..'z'] ++ map (('a':) . show) [0 :: Integer ..]
 
 -------------------------------------------------------------------------------
 
-computeTypes :: Bool -> Type -> Name -> [TyVarBndr ()] -> Subst -> Q Typing
+computeTypes :: Bool -> Type -> Name -> [TyVarBndr BndrVis] -> Subst -> Q Typing
 computeTypes forcedMono fieldtype datatype dtVars_ subst =
 
   do let fieldVars = typeVariables fieldtype
